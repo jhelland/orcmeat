@@ -4,7 +4,6 @@
 //  Base class for future states.
 //
 
-
 #ifndef G_STATES_H
 #define G_STATES_H
 
