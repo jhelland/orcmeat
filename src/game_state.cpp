@@ -7,9 +7,11 @@
 
 #include<iostream>
 
-#include "game.h"
+#include "game_state.h"
 #include "sound.h"
 #include "music.h"
+#include "entity_circle.h"
+
 
 GameState GameState::g_state; // declaration for static GameState g_state
 
@@ -25,9 +27,6 @@ void GameState::initialize() {
 
 
 void GameState::clean() {
-	// clear circles
-	circs.clear();
-
 	// stop playing music
 	msc::stop_music();
 }
@@ -46,16 +45,19 @@ void GameState::update(StateEngine* eng) {
 
 }
 
+using namespace std;
 void GameState::draw(StateEngine* eng) {
 	eng->window.setView(eng->playFieldView);
 	eng->window.clear(sf::Color(0, 0, 0, 255));
 	eng->window.draw(background);
-	for (int i = 0; (unsigned)i < this->circs.size(); i++) {
-		eng->window.draw(circs[i]);
+
+	for (auto& id : eng->entitiesDist0) {
+		Entity* entity = eng->get_entity_by_id(id);
+		if (entity != nullptr)
+			eng->window.draw(*dynamic_cast<CircleEntity*>(entity));
 	}
 
-	// Test to make sure view is working properly
-	// Draw a magenta circle on right edge of screen over world
+	// Test to make sure view is working properly by drawing magenta circle
 	eng->window.setView(eng->window.getDefaultView());
 	sf::CircleShape c(30.f, 30);
 	c.setFillColor(sf::Color::Magenta);
@@ -94,14 +96,13 @@ void GameState::handle_events(StateEngine *eng) {
 			switch (event.key.code) {
 			case sf::Mouse::Left: {
 				sf::Vector2f v = eng->window.mapPixelToCoords(sf::Vector2i(20, 20));
-				sf::CircleShape c;
-				c.setRadius(20);
-				c.setPosition(sf::Mouse::getPosition(eng->window).x - v.x,
-					sf::Mouse::getPosition(eng->window).y - v.y);
-				c.setFillColor(sf::Color::Red);
-				circs.push_back(c);
+				v = eng->window.mapPixelToCoords(sf::Mouse::getPosition(eng->window)) - v;
+				Entity* circEnt = new CircleEntity(v.x, v.y, 20.0, sf::Color::Red);
 
-				snd::play_sound(snd::blip, c.getPosition(), 100.f);
+				// Update global entity list with new entity
+				eng->add_entity(circEnt);
+
+				snd::play_sound(snd::blip, circEnt->get_position(), 100.f);
 				break;
 			}
 
@@ -111,6 +112,7 @@ void GameState::handle_events(StateEngine *eng) {
 			break;
 		}
 
+		// If window is minimized or something, pause game
 		case sf::Event::LostFocus:
 			pause();
 			eng->push_state(PauseMenuState::instance());

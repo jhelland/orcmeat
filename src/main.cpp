@@ -11,7 +11,7 @@
 
 
 int main() {
-	StateEngine gameStateEngine("Orc Meat");
+	static StateEngine gameStateEngine("Orc Meat");
 
 	gameStateEngine.change_state(MainMenu::instance());
 

@@ -23,8 +23,6 @@ public:
 	virtual void draw(StateEngine*) = 0;
 	virtual void handle_events(StateEngine*) = 0;
 
-	void change_state(StateEngine* eng, State* st) { eng->change_state(st); }
-
 protected:
 	State() { }
 };

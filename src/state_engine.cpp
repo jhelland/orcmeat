@@ -27,6 +27,8 @@ StateEngine::StateEngine(std::string title) {
 
 // destructor
 StateEngine::~StateEngine() {
+	clear_entities();
+
 	while (!states.empty()) {
 		states.top()->clean();
 		states.pop();
@@ -62,6 +64,8 @@ void StateEngine::pop_state() {
 
 
 void StateEngine::clear_states() {
+	clear_entities();
+
 	while (!states.empty()) {
 		states.top()->clean();
 		states.pop();
@@ -87,3 +91,27 @@ void StateEngine::draw() {
 }
 
 
+void StateEngine::add_entity(Entity* entity) {
+	entities.insert({ entity->get_id(), entity });  // Update global entity list
+	entitiesDist0.push_back(entity->get_id());      // Update list of enemies w/in range 0
+}
+
+
+Entity* StateEngine::get_entity_by_id(uuids::uuid& id) {
+	if (entities.count(id))
+		return entities[id];
+
+	return nullptr;
+}
+
+
+void StateEngine::clear_entities() {
+	// Clear heap allocated entities
+	for (auto it : entities)
+		delete it.second;
+
+	// Remove entity pointers and IDs from lists
+	entities.clear();
+	entitiesDist0.clear();
+	entitiesDist0.resize(0);
+}

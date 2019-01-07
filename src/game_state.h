@@ -9,12 +9,14 @@
 #define GAME_H
 
 
+#include <vector>
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include <vector>
 
 #include "main_menu_state.h"
 #include "pause_menu_state.h"
+#include "entity_circle.h"
 
 
 class GameState : public State {
@@ -34,8 +36,7 @@ protected:
 	GameState() { }
 
 private:
-	static GameState g_state; // Static to prevent creating new copies with every copy of the state
-	std::vector<sf::CircleShape> circs;
+	static GameState g_state; // Static to prevent creating new copies with every instance of the state
 	sf::Texture background_img;
 	sf::Sprite background;
 };

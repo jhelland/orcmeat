@@ -13,9 +13,13 @@
 
 
 #include <stack>
+#include <unordered_map>
+#include <uuid.h>  // stduuid library: https://github.com/mariusbancila/stduuid
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+
+#include "entity.h"
 
 
 class State; // Forward declare; defined in src/g_states 
@@ -39,12 +43,18 @@ public:
 	void exit() { bRunning = false; }
 
 	int get_stack_length() { return states.size(); }
-
-	sf::RenderWindow window;
-	sf::View playFieldView;
+	int get_entities_length() { return entities.size(); }
+	void add_entity(Entity* entity);
+	Entity* get_entity_by_id(uuids::uuid& id);
+	void clear_entities();
+	
+	sf::RenderWindow window;					// Default view
+	sf::View playFieldView;						// View for the player
+	std::vector<uuids::uuid> entitiesDist0;		// An example of a list of entities w/in update range
 
 private:
 	std::stack<State*> states;
+	std::unordered_map<uuids::uuid, Entity*> entities;
 
 	bool bRunning;
 	const int nWinWidth = 800;

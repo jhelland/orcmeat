@@ -13,7 +13,7 @@
 
 #include "g_states.h"
 #include "state_engine.h"
-#include "game.h"
+#include "game_state.h"
 
 
 class MainMenu : public State {
