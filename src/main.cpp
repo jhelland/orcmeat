@@ -4,28 +4,26 @@
 //  Main driver: initiates state manager for game
 
 
+#include<iostream>
+
 #include "state_engine.h"
 #include "main_menu_state.h"
 
-#include <iostream>
 
-
-int main () 
-{
-  StateEngine gameStateEngine("Orc Meat");
+int main() {
+	StateEngine gameStateEngine("Orc Meat");
 
 	gameStateEngine.change_state(MainMenu::instance());
 
-	while (gameStateEngine.is_running()) 
-  {
+	while (gameStateEngine.is_running()) {
 		gameStateEngine.handle_events();
 		gameStateEngine.update();
 		gameStateEngine.draw();
 	}
 
-  std::cout << "Game exited\n";
+	std::cout << "Game exited\n";
 
-  gameStateEngine.window.close();
+	gameStateEngine.window.close();
 }
 
 

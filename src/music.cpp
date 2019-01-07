@@ -7,18 +7,15 @@
 #include "music.h"
 
 
-namespace msc 
-{
-	namespace 
-  {
-    sf::Music music;
+namespace msc {
+	namespace {
+		static sf::Music music;
 
 
-		bool initialized (false);
+		bool initialized(false);
 
 
-		void init () 
-    {
+		void init() {
 			sf::Listener::setPosition(400.f, 0.f, 0.f);
 			music.setLoop(false);
 			music.setRelativeToListener(true);
@@ -28,35 +25,30 @@ namespace msc
 	}
 
 
-	void pause_music () 
-  {
+	void pause_music() {
 		msc::music.pause();
 	}
 
 
-	void resume_music () 
-  {
+	void resume_music() {
 		msc::music.play();
 	}
 
 
-	void play_music (std::string filename) 
-  {
+	void play_music(std::string filename) {
 		msc::music.openFromFile(filename);
 		msc::music.play();
 	}
 
 
-  void stop_music ()
-  {
-    msc::music.stop();
-  }
+	void stop_music() {
+		msc::music.stop();
+	}
 
 
-	void update () 
-  {
+	void update() {
 		if (music.getStatus() == sf::Music::Stopped)
-			play_music("music\\Induction.ogg");  //"../music/Induction.ogg");
+			play_music("music\\Induction.ogg");  //Linux, mac: "../music/Induction.ogg");
 	}
 }
 

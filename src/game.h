@@ -9,38 +9,35 @@
 #define GAME_H
 
 
-#include "main_menu_state.h"
-#include "pause_menu_state.h"
-
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <vector>
 
+#include "main_menu_state.h"
+#include "pause_menu_state.h"
 
-class GameState : public State 
-{
-  public:
-    void initialize ();
-    void clean ();
 
-    void pause ();
-    void resume ();
+class GameState : public State {
+public:
+	void initialize();
+	void clean();
 
-    void update (StateEngine*);
-    void draw (StateEngine*);
-    void handle_events (StateEngine*);
-    //GameState();
-    static GameState* instance () { return &g_state; } // allow for convenient switching between states
+	void pause();
+	void resume();
 
-  // protected allows inheritance and use by friend classes	
-  protected:
-    GameState () { }
+	void update(StateEngine*);
+	void draw(StateEngine*);
+	void handle_events(StateEngine*);
+	static GameState* instance() { return &g_state; } // allow for convenient switching between states
 
-  private:
-    static GameState g_state; // static to prevent creating new copies with every copy of the state
-    std::vector<sf::CircleShape> circs;
-    sf::Texture background_img;
-    sf::Sprite background;
+protected:
+	GameState() { }
+
+private:
+	static GameState g_state; // Static to prevent creating new copies with every copy of the state
+	std::vector<sf::CircleShape> circs;
+	sf::Texture background_img;
+	sf::Sprite background;
 };
 
 

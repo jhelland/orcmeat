@@ -13,7 +13,6 @@
 
 
 #include <stack>
-#include <string>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -22,35 +21,35 @@
 class State; // Forward declare; defined in src/g_states 
 
 
-class StateEngine 
-{
-  public:
-    StateEngine (std::string title);
-    ~StateEngine ();
+class StateEngine {
+public:
+	StateEngine(std::string title);
+	~StateEngine();
 
-    void change_state (State*);
-    void push_state (State*);
-    void pop_state ();
-    void clear_states ();
+	void change_state(State*);
+	void push_state(State*);
+	void pop_state();
+	void clear_states();
 
-    void handle_events ();
-    void update ();
-    void draw ();
+	void handle_events();
+	void update();
+	void draw();
 
-    bool is_running () { return bRunning; }
-    void exit () { bRunning = false; }
+	bool is_running() { return bRunning; }
+	void exit() { bRunning = false; }
 
-    int get_stack_length () { return states.size(); }
+	int get_stack_length() { return states.size(); }
 
-    sf::RenderWindow window;
-    sf::View playFieldView;
+	sf::RenderWindow window;
+	sf::View playFieldView;
 
-  private:
-    std::stack<State*> states;
+private:
+	std::stack<State*> states;
 
-    bool bRunning;
-    const int nWinWidth = 440;
-    const int nWinHeight = 600;
+	bool bRunning;
+	const int nWinWidth = 800;
+	const int nWinHeight = 600;
+	const int nFrameLimit = 60;
 };
 
 

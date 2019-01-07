@@ -8,37 +8,35 @@
 #define MAIN_MENU_STATE_H
 
 
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+
 #include "g_states.h"
 #include "state_engine.h"
 #include "game.h"
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
 
+class MainMenu : public State {
+public:
+	void initialize();
+	void clean();
 
-class MainMenu : public State 
-{
-  public:
-    void initialize ();
-    void clean ();
+	void pause();
+	void resume();
 
-    void pause ();
-    void resume ();
+	void update(StateEngine*);
+	void draw(StateEngine*);
+	void handle_events(StateEngine*);
 
-    void update (StateEngine*);
-    void draw (StateEngine*);
-    void handle_events (StateEngine*);
+	static MainMenu* instance() { return &m_menu; } // allow for convenient switching between states
 
-    static MainMenu* instance () { return &m_menu; } // allow for convenient switching between states
+protected:
+	MainMenu() { }
 
-  // protected allows inheritance and use by friend classes
-  protected:
-    MainMenu () { }
-
-  private:
-    static MainMenu m_menu; // static to prevent creating new copies with every copy of the state
-    sf::Texture playButton_t;
-    sf::Sprite playButton;
+private:
+	static MainMenu m_menu; 
+	sf::Texture playButton_t;
+	sf::Sprite playButton;
 };
 
 

@@ -13,17 +13,16 @@
 #include <string>
 
 
-namespace msc 
-{
-	void play_music (std::string filename);
+namespace msc {
+	void play_music(std::string filename);
 
-	void pause_music ();
+	void pause_music();
 
-	void resume_music ();
+	void resume_music();
 
-  void stop_music ();
+	void stop_music();
 
-	void update ();
+	void update();
 }
 
 

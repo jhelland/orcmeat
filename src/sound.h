@@ -13,11 +13,10 @@
 #include <SFML/Audio.hpp>
 
 
-namespace snd 
-{
+namespace snd {
 	enum soundType { blip, COUNT };
 
-	void play_sound (soundType type, sf::Vector2f position, float volume);
+	void play_sound(soundType type, sf::Vector2f position, float volume);
 }
 
 

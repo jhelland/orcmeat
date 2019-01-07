@@ -9,36 +9,35 @@
 #define PAUSE_MENU_STATE_H
 
 
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+
 #include "g_states.h"
 #include "state_engine.h"
 #include "main_menu_state.h"
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
 
+class PauseMenuState : public State {
+public:
+	void initialize();
+	void clean();
 
-class PauseMenuState : public State 
-{
-  public:
-    void initialize ();
-    void clean ();
+	void pause();
+	void resume();
 
-    void pause ();
-    void resume ();
+	void update(StateEngine*);
+	void draw(StateEngine*);
+	void handle_events(StateEngine*);
 
-    void update (StateEngine*);
-    void draw (StateEngine*);
-    void handle_events (StateEngine*);
+	static PauseMenuState* instance() { return &state; }
 
-    static PauseMenuState* instance () { return &state; }
+protected:
+	PauseMenuState() { }
 
-  protected:
-    PauseMenuState () { }
+private:
+	static PauseMenuState state;
 
-  private:
-    static PauseMenuState state;
-
-    sf::CircleShape p_circ;
+	sf::CircleShape p_circ;
 };
 
 
