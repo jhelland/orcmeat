@@ -45,17 +45,19 @@ void GameState::update(StateEngine* eng) {
 
 }
 
-using namespace std;
 void GameState::draw(StateEngine* eng) {
 	eng->window.setView(eng->playFieldView);
 	eng->window.clear(sf::Color(0, 0, 0, 255));
 	eng->window.draw(background);
 
-	for (auto& id : eng->entitiesDist0) {
-		Entity* entity = eng->get_entity_by_id(id);
+	for (auto& id : entitiesDist0) {
+		Entity* entity = get_entity_by_id(id);
+		std::cout << entity->get_id() << std::flush;
 		if (entity != nullptr)
-			eng->window.draw(*dynamic_cast<CircleEntity*>(entity));
+			//eng->window.draw(*dynamic_cast<CircleEntity*>(entity));
+			entity->draw(eng->window);
 	}
+	std::cout << std::endl;
 
 	// Test to make sure view is working properly by drawing magenta circle
 	eng->window.setView(eng->window.getDefaultView());
@@ -100,7 +102,7 @@ void GameState::handle_events(StateEngine *eng) {
 				Entity* circEnt = new CircleEntity(v.x, v.y, 20.0, sf::Color::Red);
 
 				// Update global entity list with new entity
-				eng->add_entity(circEnt);
+				add_entity(circEnt);
 
 				snd::play_sound(snd::blip, circEnt->get_position(), 100.f);
 				break;
@@ -127,3 +129,30 @@ void GameState::handle_events(StateEngine *eng) {
 		}
 	}
 }
+
+
+void GameState::add_entity(Entity* entity) {
+	entities.insert({ entity->get_id(), entity });  // Update global entity list
+	entitiesDist0.push_back(entity->get_id());      // Update list of enemies w/in range 0
+}
+
+
+Entity* GameState::get_entity_by_id(unsigned int id) const {
+	if (entities.count(id))
+		return entities.at(id);
+
+	return nullptr;
+}
+
+
+void GameState::clear_entities() {
+	// Clear heap allocated entities
+	for (auto it : entities)
+		delete it.second;
+
+	// Remove entity pointers and IDs from lists
+	entities.clear();
+	entitiesDist0.clear();
+	entitiesDist0.resize(0);
+}
+

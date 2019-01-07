@@ -1,7 +1,7 @@
 // Created by jhelland (1/6/19)
 //
 // DESCRIPTION:
-//	General entity class
+//	Generic entity class with unique ID per instance.
 //
 
 
@@ -11,25 +11,21 @@
 
 #include <iostream>
 
-#include <uuid.h>
 #include <SFML/Graphics.hpp>
 
-// Generate unique IDs for each entity. This should be static to avoid reinitializing the
-// Marsenne Twister engine implicit in the object for every entity created.
-static uuids::uuid_random_generator uuid_gen;  
+#include "id_gen.h"  // For generating unique ID for each entity instance
 
 
-// I'm including the UUID generation here because I want to make it as brainless as possible
-// to create a new entity and insert it into the global entities table.
 class Entity {
 public:
-	Entity() : id(uuid_gen()) {}
+	Entity() : id(id::generate_id()) {}
 
-	uuids::uuid get_id() { return id; }
-	virtual sf::Vector2f get_position() = 0;
+	unsigned int get_id() const { return id; }
+	virtual sf::Vector2f get_position() const = 0;
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const = 0;
 
 private:
-	const uuids::uuid id;  // Unique ID for indexing in global entity table
+	const unsigned int id;  // Unique ID for indexing in global entity table
 };
 
 
