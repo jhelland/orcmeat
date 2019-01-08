@@ -21,9 +21,9 @@ int main() {
 		gameStateEngine.draw();
 	}
 
-	std::cout << "Game exited\n";
-
 	gameStateEngine.window.close();
+
+	std::cout << "Game exited\n";
 }
 
 

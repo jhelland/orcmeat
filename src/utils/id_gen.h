@@ -10,7 +10,10 @@
 
 
 namespace id {
-	unsigned int generate_id();
+	typedef unsigned int EntityIdType;  // Just to make code more readable
+
+	const EntityIdType generate_id();
+	void reset();
 }
 
 

@@ -14,7 +14,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
-#include "entity.h"
+#include "ecs/entity.h"
 
 
 class State; // Forward declare; defined in src/g_states 
@@ -23,7 +23,7 @@ class State; // Forward declare; defined in src/g_states
 class StateEngine {
 public:
 	StateEngine(std::string title);
-	~StateEngine();
+	~StateEngine() { clear_states(); };
 
 	void change_state(State*);
 	void push_state(State*);
@@ -34,10 +34,11 @@ public:
 	void update();
 	void draw();
 
-	bool is_running() { return bRunning; }
-	void exit() { bRunning = false; }
+	inline bool is_running() { return bRunning; }
+	void exit();
 
-	int get_stack_length() { return states.size(); }
+	inline int get_stack_length() const { return states.size(); }
+	inline const sf::Vector2i get_window_dimensions() const { return sf::Vector2i(nWinWidth, nWinHeight); }
 		
 	sf::RenderWindow window;					// Default view
 	sf::View playFieldView;						// View for the player

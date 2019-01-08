@@ -16,11 +16,25 @@
 
 #include "main_menu_state.h"
 #include "pause_menu_state.h"
-#include "entity_circle.h"
+#include "entities/entity_circle.h"
+#include "utils/id_gen.h"
 
 
 class GameState : public State {
+private:
+	static GameState g_state; // Static to prevent creating new copies with every instance of the state
+	std::unordered_map<id::EntityIdType, ecs::Entity*> entitiesRegister;
+	sf::Texture background_img;
+	sf::Sprite background;
+	id::EntityIdType playerId;
+	id::EntityIdType transformId;
+
 public:
+	std::vector<id::EntityIdType> entitiesDist0;		// An example of a list of entities w/in update range
+	std::vector<id::EntityIdType> entitiesPurgeList;
+
+public:
+	// State management
 	void initialize();
 	void clean();
 
@@ -30,23 +44,18 @@ public:
 	void update(StateEngine*);
 	void draw(StateEngine*);
 	void handle_events(StateEngine*);
-	static GameState* instance() { return &g_state; } // allow for convenient switching between states
+	inline static GameState* instance() { return &g_state; } // allow for convenient switching between states
 
-	int get_entities_length() const { return entities.size(); }
-	void add_entity(Entity* entity);
-	Entity* get_entity_by_id(unsigned int id) const;
+	// Entity management
+	inline int get_entities_length() const { return entitiesRegister.size(); }
+	void register_entity(ecs::Entity* entity);
+	inline ecs::Entity* get_entity_by_id(id::EntityIdType id) const { return has_entity(id) ? entitiesRegister.at(id) : nullptr; }
+	inline bool has_entity(id::EntityIdType id) const { return (bool)entitiesRegister.count(id); }
+	void delete_entity(id::EntityIdType id);
 	void clear_entities();
 
-	std::vector<unsigned int> entitiesDist0;		// An example of a list of entities w/in update range
-
 protected:
-	GameState() { }
-
-private:
-	static GameState g_state; // Static to prevent creating new copies with every instance of the state
-	std::unordered_map<unsigned int, Entity*> entities;
-	sf::Texture background_img;
-	sf::Sprite background;
+	GameState() {}
 };
 
 

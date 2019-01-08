@@ -25,15 +25,6 @@ StateEngine::StateEngine(std::string title) {
 }
 
 
-// destructor
-StateEngine::~StateEngine() {
-	while (!states.empty()) {
-		states.top()->clean();
-		states.pop();
-	}
-}
-
-
 void StateEngine::change_state(State* state) {
 	if (!states.empty()) {
 		states.top()->clean();
@@ -84,4 +75,9 @@ void StateEngine::draw() {
 	window.clear();
 	states.top()->draw(this);
 	window.display();
+}
+
+
+void StateEngine::exit() {
+	bRunning = false;
 }

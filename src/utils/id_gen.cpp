@@ -10,10 +10,15 @@
 
 namespace id {
 	namespace {
-		static unsigned int id = 0;
+		static EntityIdType id = 0;
 	}
 
-	unsigned int generate_id() {
+	const EntityIdType generate_id() {
 		return id++;
+	}
+
+
+	void reset() {
+		id = 0;
 	}
 }

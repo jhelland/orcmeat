@@ -49,8 +49,6 @@ void PauseMenuState::handle_events(StateEngine* eng) {
 	sf::Event event;
 
 	while (eng->window.pollEvent(event)) {
-		std::cout << "PauseMenu\t" << event.key.code << "\t" << eng->get_stack_length() << std::endl;
-
 		switch (event.type) {
 		case sf::Event::KeyPressed: {
 			switch (event.key.code) {
