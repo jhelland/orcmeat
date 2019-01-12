@@ -15,38 +15,11 @@
 
 
 #include "allocator.h"
+#include "../../utils/data_structures/stack_linked_list.h"
 
 
 namespace core {
 	namespace memory {
-
-		template<typename T>
-		class StackLinkedList {
-		private:
-			StackLinkedList(StackLinkedList& stackLinkedList);
-
-		public:
-			struct Node {
-				T data;
-				Node* next;
-			};
-			Node* head;
-
-		public:
-			StackLinkedList() {}
-
-			void push(Node* node) {
-				node->next = head;
-				head = node;
-			}
-
-			Node* pop() {
-				Node* top = head;
-				head = head->next;
-				return top;
-			}
-		};
-
 
 		class PoolAllocator : public Allocator {
 		private:

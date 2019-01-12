@@ -12,6 +12,8 @@
 #include <typeinfo>
 
 #include "entity.h"
+//#include "core.h"
+#include "allocators/freelist_allocator.h"
 #include "allocators/pool_allocator.h"
 #include "../utils/id_gen.h"
 
@@ -22,7 +24,8 @@ namespace core {
 	class EntityManager {
 	private:
 		const unsigned int numPoolObjs;
-		memory::PoolAllocator* allocator = nullptr;
+		//memory::PoolAllocator* allocator = nullptr;
+		memory::FreeListAllocator* allocator = nullptr;
 		std::unordered_map<id::IdType, Entity*> entitiesRegister;
 
 	public:
@@ -40,7 +43,9 @@ namespace core {
 		inline void register_entity_type() {
 			if (allocator == nullptr) {
 				size_t totalSize = 100 * sizeof(T);
-				allocator = new memory::PoolAllocator(totalSize, sizeof(T));
+				//allocator = new memory::PoolAllocator(totalSize, sizeof(T));
+				auto policy = memory::FreeListAllocator::FIND_BEST;
+				allocator = new memory::FreeListAllocator(totalSize, policy);
 				allocator->init();
 			}
 		}
@@ -51,7 +56,7 @@ namespace core {
 			register_entity_type<T>();  
 
 			// Get memory to allocate new entity
-			void* ptrMem = allocator->alloc(sizeof(T));  // Does padding matter here?
+			void* ptrMem = allocator->alloc(sizeof(T));  // Does padding matter here? YES, YES IT DOES: use defaults
 
 			// Create entity in place and add to global register
 			Entity* entity = new(ptrMem) T(std::forward<ARGS>(args)...);
