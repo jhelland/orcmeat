@@ -9,13 +9,16 @@
 #define COMPONENT_TRANSFORM_H
 
 
-#include "../ecs/component.h"
-
 #include <SFML/Graphics.hpp>
 
+#include "../core/core.h"
 
-class TransformComponent : public ecs::ComponentBase<TransformComponent> {
+
+class TransformComponent : public core::Component {  //core::ComponentBase<TransformComponent> {
 private:
+	static std::vector<id::IdType> owners;
+	core::Entity* owner;
+	
 	sf::Vector2f position;
 	float velocity;
 
@@ -25,7 +28,10 @@ public:
 	TransformComponent(sf::Vector2f position, float velocity) : position(position), velocity(velocity) {}
 
 	inline sf::Vector2f get_position() const { return position; }
+	inline void set_position(sf::Vector2f position) { this->position = position; }
 	inline void update_position(sf::Vector2f& direction) { this->position += velocity * direction; }
+
+	inline void set_owner(core::Entity* owner) { this->owner = owner; }
 };
 
 

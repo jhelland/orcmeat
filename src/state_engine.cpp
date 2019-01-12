@@ -4,7 +4,9 @@
 //  Archetype state machine manager.
 
 
+#ifdef _DEBUG
 #include <iostream>
+#endif
 
 #include "state_engine.h"
 #include "g_states.h"
@@ -22,6 +24,11 @@ StateEngine::StateEngine(std::string title) {
 	playFieldView.reset(sf::FloatRect(
 		0.f, 0.f, static_cast<float>(nWinWidth), static_cast<float>(nWinHeight)
 	));
+}
+
+
+StateEngine::~StateEngine() {
+	clear_states();
 }
 
 

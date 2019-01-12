@@ -10,10 +10,10 @@
 
 namespace id {
 	namespace {
-		static EntityIdType id = 0;
+		static IdType id = 0;
 	}
 
-	const EntityIdType generate_id() {
+	const IdType generate_id() {
 		return id++;
 	}
 

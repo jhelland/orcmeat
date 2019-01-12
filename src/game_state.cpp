@@ -14,7 +14,7 @@
 #include "components/component_transform.h"
 
 
-GameState GameState::g_state; // declaration for static GameState g_state
+GameState GameState::g_state; // forward declaration for static GameState g_state
 
 
 void GameState::initialize() {
@@ -22,24 +22,22 @@ void GameState::initialize() {
 	background_img.loadFromFile("textures\\background.jpg");  // linux, mac: "../textures/background.jpg");
 	background.setTexture(background_img);
 
-	// background music
+	// continuous background music
 	msc::play_music("music\\Induction.ogg");  // linux, mac: "../music/Induction.ogg");
 
 	// Initialize player in entity list
-	ecs::Entity* player = new CircleEntity(400.f, 300.f, 30.f, sf::Color::Magenta);
-	playerId = player->get_id();
-	ecs::Component* transform = new TransformComponent(player->get_position());
-	transformId = transform->get_id();
-	player->register_component(transform);
-	register_entity(player);
+	core::Entity* player = entityManager.add_entity<CircleEntity>(400.f, 300.f, 30.f, sf::Color::Magenta);
+	player->register_component<TransformComponent>();
+	player->get_component<TransformComponent>()->set_position(player->get_position());
+
+	entitiesDist0.push_back(player->get_id());
 }
 
 
 void GameState::clean() {
-	// stop playing music
 	msc::stop_music();
 	id::reset();  // Reset UUID generator
-	clear_entities();
+	entityManager.clear_entities();
 }
 
 
@@ -54,38 +52,26 @@ void GameState::resume() {
 
 
 void GameState::update(StateEngine* eng) {
-	// Delete entities in purge list
 	for (auto& id : entitiesPurgeList)
-		delete_entity(id);
+		entityManager.delete_entity(id);
 	entitiesPurgeList.clear();
 
-	// Update player position
-	sf::Vector2f v = eng->window.mapPixelToCoords(sf::Mouse::getPosition(eng->window));
-	v -= eng->window.mapPixelToCoords(sf::Vector2i(30, 30));
-	v -= entitiesRegister[playerId]->get_position();
-	dynamic_cast<TransformComponent*>(entitiesRegister[playerId]->get_component_by_id(transformId))->update_position(v);
-	sf::Vector2f newPos = dynamic_cast<TransformComponent*>(entitiesRegister[playerId]->get_component_by_id(transformId))->get_position();
-	auto winDims = eng->window.mapPixelToCoords(eng->get_window_dimensions());
+	// Update entity positions
+	for (auto& it : *entityManager.get_entity_register()) {
+		if (it.first == playerId) {
+			// lerp between mouse position and player position
+			auto position = eng->window.mapPixelToCoords(sf::Mouse::getPosition(eng->window));
+			position -= eng->window.mapPixelToCoords(sf::Vector2i(30, 30));
+			it.second->set_position(it.second->get_position() + 0.05f*(position - it.second->get_position()));
+		}
+		else if (it.second->has_component<TransformComponent>()) {
+			// lerp between mouse click point and random point
+			auto position = it.second->get_component<TransformComponent>()->get_position();
+			it.second->set_position(it.second->get_position() + 0.01f*(position - it.second->get_position()));
 
-	if (!sf::Rect<float>::Rect(0.f, 0.f, winDims.x - 60.f, winDims.y - 60.f).contains(newPos)) {
-		newPos = entitiesRegister[playerId]->get_position();
-		dynamic_cast<TransformComponent*>(entitiesRegister[playerId]->get_component_by_id(transformId))->update_position(-v);
-	}
-
-	dynamic_cast<CircleEntity*>(entitiesRegister[playerId])->set_position(newPos);
-
-
-	// Update other entity positions
-	for (auto& it : entitiesRegister) {
-		if (it.first != playerId && it.second->has_component(transformId)) {
-			sf::Vector2f direction = dynamic_cast<CircleEntity*>(it.second)->get_direction();
-			dynamic_cast<TransformComponent*>(it.second->get_component_by_id(transformId))->update_position(direction);
-			newPos = dynamic_cast<TransformComponent*>(it.second->get_component_by_id(transformId))->get_position();
-			dynamic_cast<CircleEntity*>(it.second)->set_position(newPos);
-		
-			// Update entities to be deleted
-			sf::Vector2f position = it.second->get_position();
-			if (!sf::Rect<float>::Rect(-40.f, -40.f, 40.f + winDims.x, 40.f + winDims.y).contains(position)) {
+			// Update purge list by checking collision with edge of window
+			auto winDims = eng->window.mapPixelToCoords(eng->get_window_dimensions());
+			if (!sf::Rect<float>::Rect(-40.f, -40.f, winDims.x, winDims.y).contains(it.second->get_position())) {
 				entitiesPurgeList.push_back(it.first);
 			}
 		}
@@ -99,11 +85,9 @@ void GameState::draw(StateEngine* eng) {
 	eng->window.draw(background);
 
 	for (auto& id : entitiesDist0) {
-		ecs::Entity* entity = get_entity_by_id(id);
+		core::Entity* entity = entityManager.get_entity_by_id(id);
 		if (entity != nullptr) {
-			//eng->window.draw(*dynamic_cast<CircleEntity*>(entity));
 			if (entity->get_id() == playerId) {
-				// Draw player in a different view
 				eng->window.setView(eng->window.getDefaultView());
 				entity->draw(eng->window);
 				eng->window.setView(eng->playFieldView);
@@ -147,14 +131,12 @@ void GameState::handle_events(StateEngine *eng) {
 				// Create new entity
 				sf::Vector2f v = eng->window.mapPixelToCoords(sf::Vector2i(20, 20));  // Account for circle radius
 				v = eng->window.mapPixelToCoords(sf::Mouse::getPosition(eng->window)) - v;
-				float velocity = distribution(generator) / 10.f;
-				unsigned int thresh = 255 - (int)std::abs(255 * velocity);
-				ecs::Entity* circEnt = new CircleEntity(v.x, v.y, 20.0, sf::Color::Color(128, 20, thresh, 255));
-				ecs::Component* transform = new TransformComponent(circEnt->get_position(), velocity);
 
-				// Update global entity list with new entity
-				circEnt->register_component(transform);
-				register_entity(circEnt);
+				core::Entity* circEnt = entityManager.add_entity<CircleEntity>(v.x, v.y, 20.f, sf::Color::Red);
+				circEnt->register_component<TransformComponent>();
+				circEnt->get_component<TransformComponent>()->set_position(sf::Vector2f(rand()%600*2.f, rand()%600*2.f));
+
+				entitiesDist0.push_back(circEnt->get_id());
 
 				snd::play_sound(snd::blip, circEnt->get_position(), 100.f);
 				break;
@@ -185,30 +167,3 @@ void GameState::handle_events(StateEngine *eng) {
 		}
 	}
 }
-
-
-void GameState::register_entity(ecs::Entity* entity) {
-	entitiesRegister.insert({ entity->get_id(), entity });  // Update global entity list
-	entitiesDist0.push_back(entity->get_id());      // Update list of enemies w/in range 0
-}
-
-
-void GameState::delete_entity(id::EntityIdType id) {
-	if (has_entity(id)) {
-		delete entitiesRegister.at(id);
-		entitiesRegister.erase(id);
-	}
-}
-
-
-void GameState::clear_entities() {
-	// Clear heap allocated entities
-	for (auto& it : entitiesRegister)
-		delete it.second;
-
-	// Remove entity pointers and IDs from lists
-	entitiesRegister.clear();
-	entitiesDist0.clear();
-	entitiesDist0.resize(0);
-}
-

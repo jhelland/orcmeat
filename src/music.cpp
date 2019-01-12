@@ -2,6 +2,7 @@
 //
 // DESCRIPTION:
 //  Handles background playing of music during gameplay.
+//
 
 
 #include "music.h"

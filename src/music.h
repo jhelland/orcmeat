@@ -14,6 +14,7 @@
 
 
 namespace msc {
+
 	void play_music(std::string filename);
 
 	void pause_music();
@@ -23,7 +24,8 @@ namespace msc {
 	void stop_music();
 
 	void update();
-}
+
+}  // namespace msc
 
 
 #endif

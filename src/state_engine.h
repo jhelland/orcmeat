@@ -14,7 +14,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
-#include "ecs/entity.h"
+#include "core/entity.h"
 
 
 class State; // Forward declare; defined in src/g_states 
@@ -23,7 +23,7 @@ class State; // Forward declare; defined in src/g_states
 class StateEngine {
 public:
 	StateEngine(std::string title);
-	~StateEngine() { clear_states(); };
+	~StateEngine(); // { clear_states(); };
 
 	void change_state(State*);
 	void push_state(State*);
