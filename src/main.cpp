@@ -4,15 +4,16 @@
 //  Main driver: initiates state manager for game
 
 
-// Debug
-
 #include<iostream>
+
+#ifdef _DEBUG
+#include <vld.h>
+#endif
 
 #include "state_engine.h"
 #include "main_menu_state.h"
 #include "core/core.h"
 
-#include <vld.h>
 
 
 int main() {

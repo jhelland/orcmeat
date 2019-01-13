@@ -29,15 +29,15 @@ namespace core {
 		std::unordered_map<id::IdType, Entity*> entitiesRegister;
 
 	public:
-		EntityManager(unsigned int numPoolObjs = 100) : numPoolObjs(numPoolObjs) {};
+		EntityManager(unsigned int numPoolObjs = 100) : numPoolObjs(numPoolObjs) {}
 
 		~EntityManager() {
 			//clear_entities();
 			delete allocator;
 		}
 
-		template<typename T>
-		inline bool has_entity_type() const { return (bool)allocMap.count(&typeid(T)); }
+		//template<typename T>
+		//inline bool has_entity_type() const { return (bool)allocMap.count(&typeid(T)); }
 
 		template<typename T>
 		inline void register_entity_type() {

@@ -69,7 +69,7 @@ namespace core {
 			used += requiredSize;
 			peak = std::max(peak, used);
 #ifdef _DEBUG
-			std::cout << "ALLOC" << "\t@H " << (void*)headerAddress << "\tD@ " << (void*)dataAddress << "\tS " << ((FreeListAllocator::AllocationHeader*)headerAddress)->blockSize << "\tAP " << alignmentPadding << "\tP " << padding << "\tM " << used << "\tR " << rest << std::endl;
+			//std::cout << "ALLOC" << "\t@H " << (void*)headerAddress << "\tD@ " << (void*)dataAddress << "\tS " << ((FreeListAllocator::AllocationHeader*)headerAddress)->blockSize << "\tAP " << alignmentPadding << "\tP " << padding << "\tM " << used << "\tR " << rest << std::endl;
 #endif 
 			return (void*)dataAddress;
 		}
@@ -152,7 +152,7 @@ namespace core {
 			// Merge contiguous/adjacent blocks
 			coalesce(itPrev, freeNode);
 #ifdef _DEBUG
-			std::cout << "FREED" << "\t@ptr " << ptr << "\tH@ " << (void*)freeNode << "\tS " << freeNode->data.blockSize << "\tM " << used << std::endl;
+			//std::cout << "FREED" << "\t@ptr " << ptr << "\tH@ " << (void*)freeNode << "\tS " << freeNode->data.blockSize << "\tM " << used << std::endl;
 #endif
 		}
 
@@ -164,7 +164,7 @@ namespace core {
 				freeNode->data.blockSize += freeNode->next->data.blockSize;
 				freeList.remove(freeNode, freeNode->next);
 #ifdef _DEBUG
-				std::cout << "\tMerging(n) " << (void*)freeNode << " & " << (void*)freeNode->next << "\tS " << freeNode->data.blockSize << std::endl;
+				//std::cout << "\tMerging(n) " << (void*)freeNode << " & " << (void*)freeNode->next << "\tS " << freeNode->data.blockSize << std::endl;
 #endif 
 			}
 
@@ -172,7 +172,7 @@ namespace core {
 				prevNode->data.blockSize += freeNode->data.blockSize;
 				freeList.remove(prevNode, freeNode);
 #ifdef _DEBUG
-				std::cout << "\tMerging(p) " << (void*)prevNode << " & " << (void*)freeNode << "\tS " << prevNode->data.blockSize << std::endl;
+				//std::cout << "\tMerging(p) " << (void*)prevNode << " & " << (void*)freeNode << "\tS " << prevNode->data.blockSize << std::endl;
 #endif
 			}
 		}

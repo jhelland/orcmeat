@@ -12,18 +12,18 @@
 #include "g_states.h"
 
 
-// initializer
 StateEngine::StateEngine(std::string title) {
 	// initalize window 
 	window.create(sf::VideoMode(nWinWidth, nWinHeight), title, sf::Style::Titlebar | sf::Style::Close); // leaving out Resize flag turns off resizing
 	window.setFramerateLimit(nFrameLimit);
 	bRunning = true;
 
-	// intialize player view
-	// default view will be used for HUD
-	playFieldView.reset(sf::FloatRect(
-		0.f, 0.f, static_cast<float>(nWinWidth), static_cast<float>(nWinHeight)
+	// Player view
+	playerView.reset(sf::FloatRect(
+		0.f, 0.f, static_cast<float>(nWinWidth)/2, static_cast<float>(nWinHeight)/2
 	));
+
+	window.setView(playerView);
 }
 
 

@@ -21,10 +21,24 @@ class State; // Forward declare; defined in src/g_states
 
 
 class StateEngine {
+private:
+	sf::Clock deltaClock;
+	std::stack<State*> states;
+
+	bool bRunning;
+	const int nWinWidth = 800;
+	const int nWinHeight = 600;
+	const int nFrameLimit = 60;
+
+public:
+	sf::RenderWindow window;
+	sf::View playerView;
+
 public:
 	StateEngine(std::string title);
-	~StateEngine(); // { clear_states(); };
+	~StateEngine(); 
 
+	// State management
 	void change_state(State*);
 	void push_state(State*);
 	void pop_state();
@@ -37,19 +51,11 @@ public:
 	inline bool is_running() { return bRunning; }
 	void exit();
 
+	// Utility functions
 	inline int get_stack_length() const { return states.size(); }
 	inline const sf::Vector2i get_window_dimensions() const { return sf::Vector2i(nWinWidth, nWinHeight); }
-		
-	sf::RenderWindow window;					// Default view
-	sf::View playFieldView;						// View for the player
 
-private:
-	std::stack<State*> states;
-
-	bool bRunning;
-	const int nWinWidth = 800;
-	const int nWinHeight = 600;
-	const int nFrameLimit = 60;
+	float get_delta_time() { return deltaClock.restart().asSeconds(); }
 };
 
 
