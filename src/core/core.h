@@ -12,7 +12,6 @@
 // ECS
 #include "entity.h"
 #include "entity_manager.h"
-#include "component.h"
 
 // Memory management
 #include "allocators/pool_allocator.h"

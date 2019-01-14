@@ -83,6 +83,15 @@ namespace core {
 		
 		inline bool has_entity(id::IdType id) const { return (bool)entitiesRegister.count(id); }
 		inline Entity* get_entity_by_id(id::IdType id) const { return has_entity(id) ? entitiesRegister.at(id) : nullptr; }
+		std::vector<Entity*> get_entities_by_ids(std::vector<id::IdType> ids) const {
+			std::vector<Entity*> entities(ids.size());
+			int i = 0;
+			for (auto&& id : ids) {
+				entities[i] = get_entity_by_id(id);
+				++i;
+			}
+			return entities;
+		}
 		inline int get_number_of_entities() const { return entitiesRegister.size(); }
 
 		inline auto get_entity_register() { return &entitiesRegister; }

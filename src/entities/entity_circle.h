@@ -28,7 +28,15 @@ public:
 	inline sf::CircleShape get_circ() const { return circle; }
 	inline void set_color(sf::Color color) { circle.setFillColor(color); }
 	inline sf::Vector2f get_position() const { return circle.getPosition(); }
-	inline void set_position(sf::Vector2f position) { circle.setPosition(position); }
+
+	sf::Rect<float> get_bounding_box() const {
+		return circle.getGlobalBounds();
+	}
+
+	inline void set_position(sf::Vector2f position) { 
+		circle.setPosition(position); 
+	}
+
 	void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const { target.draw(circle); }
 };
 

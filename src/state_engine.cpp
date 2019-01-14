@@ -16,6 +16,8 @@ StateEngine::StateEngine(std::string title) {
 	// initalize window 
 	window.create(sf::VideoMode(nWinWidth, nWinHeight), title, sf::Style::Titlebar | sf::Style::Close); // leaving out Resize flag turns off resizing
 	window.setFramerateLimit(nFrameLimit);
+	window.setVerticalSyncEnabled(true);
+	window.setJoystickThreshold(20.f);
 	bRunning = true;
 
 	// Player view

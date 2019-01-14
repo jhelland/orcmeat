@@ -18,6 +18,7 @@
 #include "pause_menu_state.h"
 #include "entities/entity_circle.h"
 #include "utils/id_gen.h"
+#include "utils/data_structures/quadtree.h"
 #include "core/core.h"
 
 

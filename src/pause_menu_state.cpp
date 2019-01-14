@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include "globals.h"
 #include "pause_menu_state.h"
 
 
@@ -49,18 +50,19 @@ void PauseMenuState::handle_events(StateEngine* eng) {
 	sf::Event event;
 
 	while (eng->window.pollEvent(event)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) ||
+			sf::Joystick::isButtonPressed(0, JoyStickButtons::START)) {
+			eng->pop_state();
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) ||
+			sf::Joystick::isButtonPressed(0, JoyStickButtons::B)) {
+			eng->clear_states();
+			eng->push_state(MainMenu::instance());
+		}
+
 		switch (event.type) {
 		case sf::Event::KeyPressed: {
 			switch (event.key.code) {
-			case sf::Keyboard::Space:
-				eng->pop_state();
-				break;
-
-			case sf::Keyboard::Escape:
-				eng->clear_states();
-				eng->push_state(MainMenu::instance());
-				break;
-
 			default:
 				break;
 			}

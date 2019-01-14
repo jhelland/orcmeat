@@ -54,6 +54,11 @@ public:
 	// Utility functions
 	inline int get_stack_length() const { return states.size(); }
 	inline const sf::Vector2i get_window_dimensions() const { return sf::Vector2i(nWinWidth, nWinHeight); }
+	inline const sf::Rect<float> get_view_box(const sf::View& view) const {
+		auto center = view.getCenter();
+		auto size = view.getSize();
+		return sf::Rect<float>(center - size / 2.f, size);
+	}
 
 	float get_delta_time() { return deltaClock.restart().asSeconds(); }
 };

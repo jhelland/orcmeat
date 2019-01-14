@@ -7,6 +7,7 @@
 
 #include <iostream>
 
+#include "globals.h"
 #include "main_menu_state.h"
 
 
@@ -48,24 +49,17 @@ void MainMenu::draw(StateEngine* eng) {
 void MainMenu::handle_events(StateEngine* eng) {
 	sf::Event event;
 	while (eng->window.pollEvent(event)) {
-		switch (event.type) {
-		case sf::Event::KeyPressed: {
-			switch (event.key.code) {
-			case sf::Keyboard::Escape:
-			case sf::Keyboard::Q:
-				eng->exit(); // since this is the main menu, we should quit here
-				break;
-
-			case sf::Keyboard::Space:
-				eng->change_state(GameState::instance());
-				// TODO: add more menu options here
-
-			default:
-				break;
-			}
-			break;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) ||
+			sf::Joystick::isButtonPressed(0, JoyStickButtons::A)) {
+			eng->change_state(GameState::instance());
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Q) ||
+			sf::Joystick::isButtonPressed(0, JoyStickButtons::B)) {
+			eng->exit();
 		}
 
+		switch (event.type) {
 		// Handle manually closing window
 		case sf::Event::Closed:
 			eng->exit();
