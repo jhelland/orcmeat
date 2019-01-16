@@ -18,8 +18,8 @@
 #include "pause_menu_state.h"
 #include "entities/entity_circle.h"
 #include "utils/id_gen.h"
-#include "utils/data_structures/quadtree.h"
 #include "core/core.h"
+#include "utils/data_structures/quadtree.h"
 
 
 class GameState : public State {
@@ -30,6 +30,8 @@ private:
 	sf::Sprite background;
 	id::IdType playerId;
 	id::IdType transformId;
+
+	Quadtree collisionTree;
 
 public:
 	std::vector<id::IdType> entitiesDist0;		// An example of a list of entities w/in update range

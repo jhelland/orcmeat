@@ -267,3 +267,4 @@ __pycache__/
 *.vcxproj
 *.filters
 *.sln
+/src/utils/data_structures/OLD_quadtree.h

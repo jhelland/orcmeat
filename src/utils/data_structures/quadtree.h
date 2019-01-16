@@ -1,142 +1,74 @@
-// Created by jhelland (1/13/19)
+// All credit for quadtree implementation to user Dragon Energy: https://stackoverflow.com/users/4842163/dragon-energy
 //
 
 
-#ifndef __QUADTREE_H__
-#define __QUADTREE_H__
+#ifndef QUADTREE_H
+#define QUADTREE_H
 
+#include "int_list.h"
 
-#include <vector>
-#include <unordered_set>
+#ifdef __cplusplus
+#define QTREE_FUNC extern "C"
+#else
+#define QTREE_FUNC
+#endif
 
-#include <SFML/Graphics.hpp>
+typedef struct Quadtree Quadtree;
 
+struct Quadtree
+{
+	// Stores all the nodes in the quadtree. The first node in this
+	// sequence is always the root.
+	IntList nodes;
 
-template<typename T, typename U>
-class Quadtree {
-private:
-	typedef Quadtree<T, U> Node;
-	typedef sf::Rect<U> Rect;
+	// Stores all the elements in the quadtree.
+	IntList elts;
 
-	const unsigned maxObjects = 10;
-	const unsigned maxDepth = 5;
+	// Stores all the element nodes in the quadtree.
+	IntList enodes;
 
-	std::vector<std::pair<T, Rect>> objects;
-	std::vector<std::unique_ptr<Node>> children;
-	int depth;
-	Rect bounds;	
+	// Stores the quadtree extents.
+	int root_mx, root_my, root_sx, root_sy;
 
-private:
-	void split() {  // Split node into 4
-		U subWidth = bounds.width / (U)2;
-		U subHeight = bounds.height / (U)2;
-		U x = bounds.left;
-		U y = bounds.top;
+	// Maximum allowed elements in a leaf before the leaf is subdivided/split unless
+	// the leaf is at the maximum allowed tree depth.
+	int max_elements;
 
-		children[0] = std::move(std::make_unique<Node>(depth + 1, Rect(x + subWidth, y, subWidth, subHeight)));				// quadrant I
-		children[1] = std::move(std::make_unique<Node>(depth + 1, Rect(x, y, subWidth, subHeight)));							// quadrant II
-		children[2] = std::move(std::make_unique<Node>(depth + 1, Rect(x, y + subHeight, subWidth, subHeight)));				// quadrant III
-		children[3] = std::move(std::make_unique<Node>(depth + 1, Rect(x + subWidth, y + subHeight, subWidth, subHeight)));	// quadrant IV
-	}
+	// Stores the maximum depth allowed for the quadtree.
+	int max_depth;
 
+	// Temporary buffer used for queries.
+	char* temp;
 
-	// Utility function to determine which quadrant a rectangle should belong to
-	int get_index(const Rect& rect) {
-		int idx = -1;  // -1 means belongs to parent
-		U vertMidpoint = bounds.left + bounds.width / (U)2;
-		U horizMidpoint = bounds.top + bounds.height / (U)2;
-
-		// Rectangle fits entirely in top quadrants
-		bool topQuad = rect.top < horizMidpoint && rect.top + rect.height < horizMidpoint;
-
-		// Rectangle fits entirely in bottom quadrants
-		bool botQuad = rect.top > horizMidpoint;
-
-		// Rectangle fits entirely in left quadrants
-		if (rect.left < vertMidpoint && rect.left + rect.width < vertMidpoint) {
-			if (topQuad)
-				idx = 1;
-			else if (botQuad)
-				idx = 2;
-		}
-
-		// Rectangle fits entirely in right quadrants
-		if (rect.left > vertMidpoint) {
-			if (topQuad)
-				idx = 0;
-			else if (botQuad)
-				idx = 3;
-		}
-
-		return idx;
-	}
-
-public:
-	Quadtree(int depth, Rect bounds) {
-		this->depth = depth;
-		this->bounds = bounds;
-
-		children.resize(4);
-		for (auto& child : children)
-			child = nullptr;
-	}
-
-
-	//~Quadtree() { clear(); }
-
-
-	void clear() {
-		objects.clear();
-
-		for (auto&& child : children) {
-			if (child != nullptr) {
-				child->clear();
-				child.reset(nullptr);
-			}
-		}
-	}
-
-
-	void insert(std::pair<T, Rect> obj) {
-		if (children[0] != nullptr) {
-			int idx = get_index(obj.second);
-			if (idx != -1) {
-				children[idx]->insert(obj);
-				return;
-			}
-		}
-
-		objects.push_back(obj);
-
-		if (objects.size() > maxObjects && depth < maxDepth) {
-			if (children[0] == nullptr)
-				split();
-
-			int i = 0;
-			while (i < objects.size()) {
-				int idx = get_index(objects[i].second);
-				if (idx != -1) {
-					children[idx]->insert(objects[i]);
-					objects.erase(objects.begin() + i);
-				}
-				else
-					++i;
-			}
-		}
-	}
-
-
-	// Returns all objects within collision-checking range for target object
-	void retrieve(std::unordered_set<T>& retObjs, const Rect& rect) {
-		int idx = get_index(rect);
-		if (idx != -1 && children[0] != nullptr)
-			children[idx]->retrieve(retObjs, rect);
-
-		// Merge set of IDs
-		for (auto& it : objects)
-			retObjs.insert(it.first);
-	}
+	// Stores the size of the temporary buffer.
+	int temp_size;
 };
 
+// Function signature used for traversing a tree node.
+typedef void QtNodeFunc(Quadtree* qt, void* user_data, int node, int depth, int mx, int my, int sx, int sy);
+
+// Creates a quadtree with the requested extents, maximum elements per leaf, and maximum tree depth.
+QTREE_FUNC void qt_create(Quadtree* qt, int width, int height, int max_elements, int max_depth);
+
+// Destroys the quadtree.
+QTREE_FUNC void qt_destroy(Quadtree* qt);
+
+// Inserts a new element to the tree.
+// Returns an index to the new element.
+QTREE_FUNC int qt_insert(Quadtree* qt, int id, float x1, float y1, float x2, float y2);
+
+// Removes the specified element from the tree.
+QTREE_FUNC void qt_remove(Quadtree* qt, int element);
+
+// Cleans up the tree, removing empty leaves.
+QTREE_FUNC void qt_cleanup(Quadtree* qt);
+
+// Outputs a list of elements found in the specified rectangle.
+QTREE_FUNC void qt_query(Quadtree* qt, IntList* out, float x1, float y1, float x2, float y2, int omit_element);
+
+// Traverses all the nodes in the tree, calling 'branch' for branch nodes and 'leaf' 
+// for leaf nodes.
+QTREE_FUNC void qt_traverse(Quadtree* qt, void* user_data, QtNodeFunc* branch, QtNodeFunc* leaf);
 
 #endif
+

@@ -131,6 +131,7 @@ void GameState::update(StateEngine* eng) {
 	//}
 
 	// Update entity positions
+		/*
 	for (auto& it : *entityManager.get_entity_register()) {
 		// Update purge list by checking collision with edge of current view
 		auto viewBox = eng->get_view_box(eng->playerView);
@@ -138,28 +139,32 @@ void GameState::update(StateEngine* eng) {
 			entitiesPurgeList.push_back(it.first);
 		}
 	}
+	*/
 
 	// Collisions: no exhaustive collision checking yet, just collisions with the player
-	Quadtree<id::IdType, float> collisionQuadtree(0, sf::Rect<float>(0.f, 0.f, 800.f, 600.f));
+	//Quadtree<id::IdType, float> collisionQuadtree(0, sf::Rect<float>(0.f, 0.f, 800.f, 600.f));
+	qt_create(&collisionTree, 800, 600, 8, 8);
+	std::unordered_map<int, id::IdType> collisionIdMap;  // IDs in quadtree are not the same as the UUIDs
 
 	for (auto& it : *entityManager.get_entity_register()) {
-		auto pair = std::make_pair(it.first, it.second->get_bounding_box());
-		collisionQuadtree.insert(pair);
-	}
-	auto box = entityManager.get_entity_by_id(playerId)->get_bounding_box();
-	std::unordered_set<id::IdType> possibleColliders;
-	collisionQuadtree.retrieve(possibleColliders, box);
-
-	std::vector<id::IdType> vec;
-	for (auto& it : possibleColliders)
-		vec.push_back(it);
-
-	for (auto&& id : vec) {
-		auto entity = entityManager.get_entity_by_id(id);
-		if (id != playerId && box.intersects(entity->get_bounding_box())) {
-			dynamic_cast<CircleEntity*>(entity)->set_color(sf::Color::Magenta);
+		if (it.first != playerId) {
+			auto box = it.second->get_bounding_box();
+			auto collId = qt_insert(&collisionTree, it.first, box.left, box.top, box.left + box.width, box.top + box.height);
+			collisionIdMap[collId] = it.first;
 		}
 	}
+
+	auto box = entityManager.get_entity_by_id(playerId)->get_bounding_box();
+	IntList intList; il_create(&intList, 0);
+
+	qt_query(&collisionTree, &intList, box.left, box.top, box.left + box.width, box.top + box.height, -1);
+	for (int n = 0; n < il_size(&intList); ++n) {
+		auto collId = il_get(&intList, n, 0);
+		dynamic_cast<CircleEntity*>(entityManager.get_entity_by_id(collisionIdMap[collId]))->set_color(sf::Color::Black);
+	}
+
+	//il_destroy(&intList);
+	qt_destroy(&collisionTree);
 } 
 
 
