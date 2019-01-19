@@ -10,20 +10,14 @@
 #include <vector>
 #include <unordered_set>
 #include <assert.h>
+#include <random>
 
 
 namespace utils {
 
-	namespace {
-		static std::random_device rd;
-		static std::default_random_engine gen(rd());
-		static std::uniform_real_distribution<float> dist(-1.f, 1.f);
-	}
+	float rand();  // { return dist(gen); }
 
-
-	float rand() { return dist(gen); }
-
-
+	/*
 	template<typename T>
 	std::vector<std::pair<T, T>> get_pairs(const std::vector<T>& inp) {
 		int n = inp.size();
@@ -46,6 +40,7 @@ namespace utils {
 
 		return ret;
 	}
+	*/
 
 }
 
