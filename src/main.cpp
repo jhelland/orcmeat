@@ -4,9 +4,9 @@
 //  Main driver: initiates state manager for game
 
 
-#include<iostream>
 
 #ifdef _DEBUG
+#include<iostream>
 #include <vld.h>
 #endif
 

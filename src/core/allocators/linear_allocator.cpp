@@ -4,7 +4,7 @@
 
 #include <stdlib.h>  // malloc, free
 #include <assert.h>  // assert
-#include <algorithm>  // max
+#include <algorithm> // max
 #ifdef _DEBUG
 #include <iostream>
 #endif
@@ -17,16 +17,11 @@ namespace core {
 	namespace memory {
 
 		LinearAllocator::~LinearAllocator() {
-			//free(start);
 			start = nullptr;
 		}
 
 
 		void LinearAllocator::init() {
-			//if (start != nullptr)
-				//free(start);
-
-			//start = malloc(totalSize);
 			start = programStackAllocator->alloc(totalSize, sizeof(size_t));
 			offset = 0;
 		}

@@ -12,7 +12,7 @@
 namespace core {
 	namespace memory {	
 
-		class LinearAllocator : public Allocator {
+		class LinearAllocator final : public Allocator {
 		protected:
 			void* start = nullptr;
 			size_t offset;

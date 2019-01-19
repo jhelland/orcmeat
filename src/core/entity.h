@@ -24,6 +24,10 @@ namespace core {
 		const id::IdType id;  // Instance-unique ID for indexing in global entity table
 
 	public:
+		bool isStaticEntity;
+		sf::Vector2f velocity;
+
+	public:
 		Entity() : id(id::generate_id()) {}
 	
 		id::IdType get_id() const { return id; }
@@ -33,6 +37,8 @@ namespace core {
 		virtual sf::Vector2f get_position() const = 0;
 
 		virtual void set_position(sf::Vector2f position) = 0;
+
+		virtual void move(sf::Vector2f position) = 0;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const = 0;
 	};  // class Entity

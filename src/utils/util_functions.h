@@ -12,27 +12,41 @@
 #include <assert.h>
 
 
-template<typename T>
-std::vector<std::pair<T, T>> get_pairs(const std::vector<T>& inp) {
-	int n = inp.size();
-	if (n < 2)
-		return std::vector<std::pair<T, T>>(0);
+namespace utils {
 
-	std::vector<bool> v(n);
-	std::fill(v.begin(), v.begin() + 2, true);
+	namespace {
+		static std::random_device rd;
+		static std::default_random_engine gen(rd());
+		static std::uniform_real_distribution<float> dist(-1.f, 1.f);
+	}
 
-	std::vector<std::pair<T, T>> ret( n*(n-1)/2 );
 
-	do {
-		std::vector<T> tmp;
-		for (int i = 0; i < n; ++i)
-			if (v[i])
-				tmp.push_back(*(inp.begin() + i));
+	float rand() { return dist(gen); }
 
-		ret.push_back(std::make_pair(tmp[0], tmp[1]));
-	} while (std::prev_permutation(v.begin(), v.end()));
 
-	return ret;
+	template<typename T>
+	std::vector<std::pair<T, T>> get_pairs(const std::vector<T>& inp) {
+		int n = inp.size();
+		if (n < 2)
+			return std::vector<std::pair<T, T>>(0);
+
+		std::vector<bool> v(n);
+		std::fill(v.begin(), v.begin() + 2, true);
+
+		std::vector<std::pair<T, T>> ret(n*(n - 1) / 2);
+
+		do {
+			std::vector<T> tmp;
+			for (int i = 0; i < n; ++i)
+				if (v[i])
+					tmp.push_back(*(inp.begin() + i));
+
+			ret.push_back(std::make_pair(tmp[0], tmp[1]));
+		} while (std::prev_permutation(v.begin(), v.end()));
+
+		return ret;
+	}
+
 }
 
 

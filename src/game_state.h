@@ -17,25 +17,26 @@
 #include "main_menu_state.h"
 #include "pause_menu_state.h"
 #include "entities/entity_circle.h"
+#include "entities/camera.h"
 #include "utils/id_gen.h"
 #include "core/core.h"
 #include "utils/data_structures/quadtree.h"
 
 
-class GameState : public State {
+class GameState final : public State {
 private:
 	static GameState g_state;  // Static instance of self for initialization on state stack
 
 	sf::Texture background_img;
 	sf::Sprite background;
 	id::IdType playerId;
-	id::IdType transformId;
 
 	Quadtree collisionTree;
+	Camera camera;
 
 public:
 	std::vector<id::IdType> entitiesDist0;		// An example of a list of entities w/in update range
-	std::vector<id::IdType> entitiesPurgeList;  // Entities to be removed from game field on next loop
+	std::vector<id::IdType> entitiesToPurgeList;  
 	core::EntityManager entityManager;			// Manages allocation of memory for entities and stuff
 
 public: 

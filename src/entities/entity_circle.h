@@ -23,19 +23,25 @@ public:
 		circle.setFillColor(color);
 		circle.setPosition(x, y);
 		circle.setRadius(radius);
+
+		isStaticEntity = true;
 	}
 
 	inline sf::CircleShape get_circ() const { return circle; }
+
 	inline void set_color(sf::Color color) { circle.setFillColor(color); }
+
 	inline sf::Vector2f get_position() const { return circle.getPosition(); }
 
-	sf::Rect<float> get_bounding_box() const {
-		return circle.getGlobalBounds();
-	}
+	sf::Rect<float> get_bounding_box() const { return circle.getGlobalBounds(); }
 
-	inline void set_position(sf::Vector2f position) { 
-		circle.setPosition(position); 
-	}
+	inline void move(sf::Vector2f position) { circle.move(position); }
+
+	inline void set_position(sf::Vector2f position) { circle.setPosition(position); }
+
+	//sf::Vector2f get_velocity() const { return velocity; }
+
+	//void set_velocity(sf::Vector2f velocity) { this->velocity = velocity; }
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const { target.draw(circle); }
 };
