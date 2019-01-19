@@ -264,7 +264,4 @@ __pycache__/
 .gitignore
 .gitattributes
 .git/
-*.vcxproj
-*.filters
-*.sln
 /src/utils/data_structures/OLD_quadtree.h

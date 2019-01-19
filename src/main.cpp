@@ -10,14 +10,14 @@
 #include <vld.h>
 #endif
 
+#include "../../live_reloading/live_reloading.h"
 #include "state_engine.h"
 #include "main_menu_state.h"
 #include "core/core.h"
 
 
-
 int main() {
-	core::memory::alloc_program_memory(104857600);  // 100 mb
+	core::memory::alloc_program_memory(3 * 104857600);  // three HUNDRED MEGAbytes
 
 	static StateEngine gameStateEngine("Orc Meat");
 
