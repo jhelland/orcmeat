@@ -20,9 +20,8 @@ private:
 public:
 	CircleEntity(float x, float y, float radius = 1.f, sf::Color color = sf::Color::Red) {
 		circle.setFillColor(color);
-		circle.setPosition(x, y);
+		position = sf::Vector2f(x, y);
 		circle.setRadius(radius);
-
 		isStaticEntity = true;
 	}
 
