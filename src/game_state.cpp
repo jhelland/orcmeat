@@ -5,68 +5,12 @@
 //
 
 
-#include <math.h>  // sqrt
-#include <unordered_set>
-#include <random>
-
-#ifdef _DEBUG
-#include<iostream>
-#endif
-
-#include "globals.h"
-#include "utils/util_functions.h"
 #include "game_state.h"
-#include "sound.h"
-#include "music.h"
-#include "entities/entity_circle.h"
-#include "entities/entity_rectangle.h"
 
 
-inline float dot_product(const sf::Vector2f& p1, const sf::Vector2f& p2) { return p1.x*p2.x + p1.y*p2.y; }
-
-inline float norm(const sf::Vector2f& v) { return std::sqrt(dot_product(v, v)); }
 
 
-sf::Vector2f get_player_direction() {
-	sf::Vector2f direction{};
-	bool joyStickFlag = sf::Joystick::isConnected(0);  // joystick slot 0
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-		direction.y -= 1.f;
-		joyStickFlag = false;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		direction.x -= 1.f;
-		joyStickFlag = false;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-		direction.y += 1.f;
-		joyStickFlag = false;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		direction.x += 1.f;
-		joyStickFlag = false;
-	}
-
-	if (joyStickFlag) {
-		float deadZone = 0.1f;
-		sf::Vector2f stickInput(0.f, 0.f);
-		stickInput.x = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
-		stickInput.y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
-		float nrm = norm(stickInput);
-
-		// Use a scaled radial deadzone: http://www.third-helix.com/2013/04/12/doing-thumbstick-dead-zones-right.html
-		if (nrm / 100 < deadZone) {
-			stickInput.x = stickInput.y = 0;
-		}
-		else {
-			stickInput = (stickInput / (nrm)) * ((nrm / 100 - deadZone) / (1 - deadZone));
-		}
-		direction = stickInput;
-	}
-
-	return direction;
-}
 
 
 GameState GameState::g_state; // forward declaration for static GameState g_state
@@ -85,7 +29,7 @@ void GameState::initialize() {
 	entitiesDist0.push_back(wall->get_id());	
 
 	// Initialize player in entity list
-	core::Entity* player = entityManager.add_entity<CircleEntity>(400.f, 300.f, 10.f, sf::Color::Magenta);
+	core::Entity* player = entityManager.add_entity<PlayerEntity>(400.f, 300.f, 10.f, sf::Color::Magenta);
 	entitiesDist0.push_back(player->get_id());
 	playerId = player->get_id();
 
@@ -121,15 +65,22 @@ void GameState::update(StateEngine* eng) {
 
 	auto player = entityManager.get_entity_by_id(playerId);
 
-	// Slow player velocity with time
-	float decay = 0.5;
-	player->velocity -= (2.f*decay - decay*decay) * player->velocity;
-
-	// Player movement
-	float speed = 170.f;
-	float deltaTime = eng->get_delta_time();
-	player->velocity += speed * get_player_direction();
-	
+	for (auto id : entitiesDist0) {
+		auto ent = entityManager.get_entity_by_id(id);
+		ent->plan(this);
+	}
+	float delta_time = eng->get_delta_time();
+	for (auto id : entitiesDist0) {
+		auto ent = entityManager.get_entity_by_id(id);
+		ent->act(this,delta_time);
+	}
+	std::vector<std::pair<id::IdType, id::IdType>> collisions;
+	// TODO: build collision list
+	for (auto collision : collisions) {
+		entityManager.get_entity_by_id(collision.first)->collide(this, collision.second);
+		entityManager.get_entity_by_id(collision.second)->collide(this, collision.first);
+	}
+	/* 
 	// Collisions: no exhaustive collision checking yet, just collisions with the player
 	qt_create(&collisionTree, 800, 600, 8, 8);
 	std::unordered_map<int, id::IdType> collisionIdMap;  // IDs in quadtree are not the same as the UUIDs
@@ -211,7 +162,7 @@ void GameState::update(StateEngine* eng) {
 			it.second->set_position(sf::Vector2f(x1, y1));
 		}
 	}
-
+	
 	// Update velocity, position after doing collision resolution
 	for (auto& it : *entityManager.get_entity_register()) {
 		if (velocityUpdates.count(it.first)) {
@@ -219,10 +170,11 @@ void GameState::update(StateEngine* eng) {
 		}
 		it.second->move(deltaTime * it.second->velocity);
 	}
-
+	*/
 	qt_destroy(&collisionTree);
 
 	// Update camera position and effects
+	float deltaTime = eng->get_delta_time();
 	auto newCameraPos = player->get_position() + 20 * deltaTime * player->velocity;
 	newCameraPos = (0.95f * newCameraPos + 0.05f *eng->window.mapPixelToCoords(sf::Mouse::getPosition(eng->window)));
 	camera.lerp_position(newCameraPos);

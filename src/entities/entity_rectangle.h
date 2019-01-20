@@ -36,6 +36,9 @@ public:
 
 	inline void set_position(sf::Vector2f position) { rectangle.setPosition(position); }
 
+	void plan(GameState* eng) {}
+	void act(GameState* eng, float delta_time) {}
+	void collide(GameState* eng, id::IdType collidee) {}
 	void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const { target.draw(rectangle); }
 };
 

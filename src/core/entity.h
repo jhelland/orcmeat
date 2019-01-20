@@ -12,10 +12,13 @@
 #include <unordered_map>
 #include <typeinfo>
 
+
 #include <SFML/Graphics.hpp>
 
-#include "../utils/id_gen.h"  
+#include "../utils/id_gen.h"
 
+
+class GameState;//Forward declaration of game state because c++ is stupid
 
 namespace core {
 
@@ -25,6 +28,7 @@ namespace core {
 
 	public:
 		bool isStaticEntity;
+		sf::Vector2f position;
 		sf::Vector2f velocity;
 
 	public:
@@ -39,6 +43,12 @@ namespace core {
 		virtual void set_position(sf::Vector2f position) = 0;
 
 		virtual void move(sf::Vector2f position) = 0;
+
+		virtual void plan(GameState* eng) = 0;
+		
+		virtual void act(GameState* eng, float delta_time) = 0;
+		
+		virtual void collide(GameState* eng, id::IdType collidee) = 0;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const = 0;
 	};  // class Entity

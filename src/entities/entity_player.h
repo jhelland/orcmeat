@@ -1,24 +1,31 @@
-// Created by jhelland (1/7/19)
+// Created by jratzlaff (1/20/19)
 //
 // DESCRIPTION:
-//	An entity for the sake of testing the engine.
+//	Player entity
 // 
 
 
-#ifndef ENTITY_CIRCLE_H
-#define ENTITY_CIRCLE_H
+#ifndef ENTITY_PLAYER_H
+#define ENTITY_PLAYER_H
 
 
 #include <SFML/Graphics.hpp>
 
 #include "../core/core.h"
+#include "../utils/util_functions.h"
 
-class CircleEntity : public core::Entity {  
+
+class PlayerEntity : public core::Entity {
 private:
 	sf::CircleShape circle;
+	sf::Vector2f get_player_direction();
+
+	inline float dot_product(const sf::Vector2f& p1, const sf::Vector2f& p2) { return p1.x*p2.x + p1.y*p2.y; }
+
+	inline float norm(const sf::Vector2f& v) { return std::sqrt(dot_product(v, v)); }
 
 public:
-	CircleEntity(float x, float y, float radius = 1.f, sf::Color color = sf::Color::Red) {
+	PlayerEntity(float x, float y, float radius = 1.f, sf::Color color = sf::Color::Red) {
 		circle.setFillColor(color);
 		circle.setPosition(x, y);
 		circle.setRadius(radius);
@@ -42,15 +49,13 @@ public:
 
 	//void set_velocity(sf::Vector2f velocity) { this->velocity = velocity; }
 
-	void plan(GameState *eng) {}
-	void act(GameState *eng, float delta_time) {
-		position += velocity*delta_time;
-		circle.setPosition(position);
-	}
-	void collide(GameState *eng, id::IdType id) {}
+	void plan(GameState* eng);
+	void act(GameState* eng, float delta_time);
+	void collide(GameState* eng, id::IdType collidee) { ; }
 
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const { target.draw(circle); }
 };
+
 
 #endif

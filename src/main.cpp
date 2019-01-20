@@ -7,7 +7,7 @@
 
 #ifdef _DEBUG
 #include<iostream>
-#include <vld.h>
+//#include <vld.h>
 #endif
 
 #include "state_engine.h"
