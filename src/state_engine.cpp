@@ -57,6 +57,8 @@ void StateEngine::pop_state() {
 	}
 	if (!states.empty()) {
 		states.top()->resume();
+	} else {
+		bRunning = false;
 	}
 }
 
@@ -71,19 +73,25 @@ void StateEngine::clear_states() {
 
 // handle window closing, switching states, etc.
 void StateEngine::handle_events() {
-	states.top()->handle_events(this);
+	if (!states.empty()) {
+		states.top()->handle_events(this);
+	}
 }
 
 
 void StateEngine::update() {
-	states.top()->update(this);
+	if (!states.empty()) {
+		states.top()->update(this);
+	}
 }
 
 
 void StateEngine::draw() {
-	window.clear();
-	states.top()->draw(this);
-	window.display();
+	if (!states.empty()) {
+		window.clear();
+		states.top()->draw(this);
+		window.display();
+	}
 }
 
 

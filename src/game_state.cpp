@@ -261,6 +261,8 @@ void GameState::handle_events(StateEngine *eng) {
 			sf::Joystick::isButtonPressed(0, JoyStickButtons::START)) {
 			pause();
 			eng->push_state(PauseMenuState::instance());
+			while (eng->window.pollEvent(event));
+			break;
 		}
 
 		switch (event.type) {
