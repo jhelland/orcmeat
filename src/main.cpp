@@ -29,9 +29,6 @@ int main() {
 	}
 
 	gameStateEngine.window.close();
-
-	std::cout << "Game exited\n";
-
 	core::memory::free_program_memory();
 }
 

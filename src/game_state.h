@@ -12,16 +12,12 @@
 #include <vector>
 #include <unordered_map>
 #include <math.h>  // sqrt
-#include <unordered_set>
-#include <random>
 
 #ifdef _DEBUG
 #include<iostream>
 #endif
 
-
 #include <SFML/Graphics.hpp>
-
 
 #include "globals.h"
 #include "utils/util_functions.h"
@@ -31,15 +27,12 @@
 #include "main_menu_state.h"
 #include "pause_menu_state.h"
 
+#include "core/entity_manager.h"
+
 #include "utils/id_gen.h"
-#include "core/core.h"
 #include "utils/data_structures/quadtree.h"
 
-
-#include "entities/entity_rectangle.h"
-#include "entities/entity_player.h"
 #include "entities/camera.h"
-#include "entities/entity_circle.h"
 
 
 class GameState final : public State {
@@ -52,6 +45,9 @@ private:
 
 	Quadtree collisionTree;
 	Camera camera;
+
+private:
+	std::vector<std::pair<id::IdType, id::IdType>> get_collisions();
 
 public:
 	std::vector<id::IdType> entitiesDist0;		// An example of a list of entities w/in update range

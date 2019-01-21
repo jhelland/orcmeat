@@ -11,45 +11,30 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../core/core.h"
+
+#include "../core/entity.h"
+#include "../utils/math_functions.h"
+
 
 class CircleEntity : public core::Entity {  
 private:
 	sf::CircleShape circle;
 
 public:
-	CircleEntity(float x, float y, float radius = 1.f, sf::Color color = sf::Color::Red) {
-		circle.setFillColor(color);
-		position = sf::Vector2f(x, y);
-		circle.setRadius(radius);
-		isStaticEntity = true;
-	}
+	CircleEntity(float x, float y, float radius = 1.f, sf::Color color = sf::Color::Red);
 
-	inline sf::CircleShape get_circ() const { return circle; }
+	inline sf::CircleShape get_circ() const;
+	inline void set_color(sf::Color color);
+	inline sf::Vector2f get_position() const;
+	sf::Rect<float> get_bounding_box() const;
+	inline void move(sf::Vector2f dir);
+	inline void set_position(sf::Vector2f position);
 
-	inline void set_color(sf::Color color) { circle.setFillColor(color); }
+	void plan(GameState *eng);
+	void act(GameState *eng, float deltaTime);
+	void collide(GameState *eng, id::IdType collideeId);
 
-	inline sf::Vector2f get_position() const { return circle.getPosition(); }
-
-	sf::Rect<float> get_bounding_box() const { return circle.getGlobalBounds(); }
-
-	inline void move(sf::Vector2f position) { circle.move(position); }
-
-	inline void set_position(sf::Vector2f position) { circle.setPosition(position); }
-
-	//sf::Vector2f get_velocity() const { return velocity; }
-
-	//void set_velocity(sf::Vector2f velocity) { this->velocity = velocity; }
-
-	void plan(GameState *eng) {}
-	void act(GameState *eng, float delta_time) {
-		position += velocity*delta_time;
-		circle.setPosition(position);
-	}
-	void collide(GameState *eng, id::IdType id) {}
-
-
-	void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const { target.draw(circle); }
+	void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
 };
 
 #endif

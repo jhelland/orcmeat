@@ -12,23 +12,22 @@
 #include <unordered_map>
 #include <typeinfo>
 
-
 #include <SFML/Graphics.hpp>
 
 #include "../utils/id_gen.h"
 
 
-class GameState;//Forward declaration of game state because c++ is stupid
+class GameState;  //Forward declaration of game state because c++ is stupid
+
 
 namespace core {
 
 	class Entity {
-	protected:
+	private:
 		const id::IdType id;  // Instance-unique ID for indexing in global entity table
 
 	public:
-		bool isStaticEntity;
-		sf::Vector2f position;
+		//sf::Vector2f position;
 		sf::Vector2f velocity;
 
 	public:
@@ -48,9 +47,9 @@ namespace core {
 		
 		virtual void act(GameState* eng, float delta_time) = 0;
 		
-		virtual void collide(GameState* eng, id::IdType collidee) = 0;
+		virtual void collide(GameState* eng, id::IdType collideeId) = 0;
 
-		virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const = 0;
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) = 0;
 	};  // class Entity
 
 }  // namespace core

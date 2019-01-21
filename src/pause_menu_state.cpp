@@ -50,12 +50,12 @@ void PauseMenuState::handle_events(StateEngine* eng) {
 	sf::Event event;
 
 	while (eng->window.pollEvent(event)) {
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) ||
+		if ((event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) ||
 			sf::Joystick::isButtonPressed(0, JoyStickButtons::START)) {
 			eng->pop_state();
 			while (eng->window.pollEvent(event));
 			break;
-		} else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) ||
+		} else if ((event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) ||
 			sf::Joystick::isButtonPressed(0, JoyStickButtons::B)) {
 			eng->clear_states();
 			eng->push_state(MainMenu::instance());

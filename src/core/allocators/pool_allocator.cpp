@@ -31,7 +31,6 @@ namespace core {
 
 
 		void PoolAllocator::init() {
-			//start = malloc(totalSize);
 			start = programStackAllocator->alloc(totalSize, sizeof(size_t));
 			reset();
 		}

@@ -18,43 +18,45 @@
 class PlayerEntity : public core::Entity {
 private:
 	sf::CircleShape circle;
-	sf::Vector2f get_player_direction();
 
-	inline float dot_product(const sf::Vector2f& p1, const sf::Vector2f& p2) { return p1.x*p2.x + p1.y*p2.y; }
-
-	inline float norm(const sf::Vector2f& v) { return std::sqrt(dot_product(v, v)); }
+private:
+	sf::Vector2f get_player_direction();	
 
 public:
 	PlayerEntity(float x, float y, float radius = 1.f, sf::Color color = sf::Color::Red) {
 		circle.setFillColor(color);
-		position = sf::Vector2f(x, y);
+		circle.setPosition(x, y);
 		circle.setRadius(radius);
 
-		isStaticEntity = true;
+		velocity = sf::Vector2f(0.f, 0.f);
 	}
 
 	inline sf::CircleShape get_circ() const { return circle; }
 
 	inline void set_color(sf::Color color) { circle.setFillColor(color); }
 
-	inline sf::Vector2f get_position() const { return circle.getPosition(); }
+	inline sf::Vector2f get_position() const { 
+		return circle.getPosition();
+	}
 
-	sf::Rect<float> get_bounding_box() const { return circle.getGlobalBounds(); }
+	sf::Rect<float> get_bounding_box() const { 
+		return circle.getGlobalBounds();
+	}
 
-	inline void move(sf::Vector2f position) { circle.move(position); }
+	inline void move(sf::Vector2f dir) { 
+		circle.move(dir);
+	}
 
-	inline void set_position(sf::Vector2f position) { circle.setPosition(position); }
-
-	//sf::Vector2f get_velocity() const { return velocity; }
-
-	//void set_velocity(sf::Vector2f velocity) { this->velocity = velocity; }
+	inline void set_position(sf::Vector2f position) { 
+		circle.setPosition(position);
+		auto box = circle.getGlobalBounds();
+	}
 
 	void plan(GameState* eng);
 	void act(GameState* eng, float delta_time);
-	void collide(GameState* eng, id::IdType collidee) { ; }
+	void collide(GameState* eng, id::IdType collideeId);
 
-
-	void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) const { target.draw(circle); }
+	void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
 };
 
 

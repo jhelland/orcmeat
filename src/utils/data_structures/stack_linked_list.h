@@ -22,7 +22,11 @@ public:
 	StackLinkedList() {}
 
 	void push(Node* node) {
-		node->next = head;
+		if (node) {
+			node->next = head;
+		} else {
+			node = head;
+		}
 		head = node;
 	}
 

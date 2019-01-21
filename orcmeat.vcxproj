@@ -72,7 +72,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\jon\Documents\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\jon\Documents\Box2D;C:\Users\jon\Documents\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -93,6 +93,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -106,7 +107,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\jon\Documents\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\jon\Documents\Box2D;C:\Users\jon\Documents\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
     </ClCompile>
@@ -119,6 +120,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Users\jon\Documents\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\jon\Documents\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -130,8 +132,11 @@
     <ClCompile Include="src\core\allocators\linear_allocator.cpp" />
     <ClCompile Include="src\core\allocators\pool_allocator.cpp" />
     <ClCompile Include="src\core\allocators\stack_allocator.cpp" />
-    <ClCompile Include="src\core\entity_manager.h" />
+    <ClCompile Include="src\core\entity_manager.cpp" />
+    <ClInclude Include="src\core\entity_manager.h" />
     <ClCompile Include="src\core\memory_manager.cpp" />
+    <ClCompile Include="src\entities\entity_circle.cpp" />
+    <ClCompile Include="src\entities\entity_player.cpp" />
     <ClCompile Include="src\utils\data_structures\int_list.c" />
     <ClCompile Include="src\utils\data_structures\quadtree.c" />
     <ClCompile Include="src\utils\id_gen.cpp" />
@@ -153,6 +158,7 @@
     <ClInclude Include="src\core\core.h" />
     <ClInclude Include="src\core\memory_manager.h" />
     <ClInclude Include="src\entities\camera.h" />
+    <ClInclude Include="src\entities\entity_player.h" />
     <ClInclude Include="src\entities\entity_rectangle.h" />
     <ClInclude Include="src\globals.h" />
     <ClInclude Include="src\utils\data_structures\int_list.h" />
@@ -172,6 +178,7 @@
     <ClInclude Include="src\pause_menu_state.h" />
     <ClInclude Include="src\sound.h" />
     <ClInclude Include="src\state_engine.h" />
+    <ClInclude Include="src\utils\math_functions.h" />
     <ClInclude Include="src\utils\util_functions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
