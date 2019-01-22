@@ -80,12 +80,12 @@ void PlayerEntity::collide(GameState* eng, id::IdType collideeId) {
 	if (std::abs(diff.x) > std::abs(diff.y)) {
 		normal.x = (float)math::sgn(diff.x);
 		dist = std::abs(diff.x);
-		penetration = std::abs(box.width / 2.f + collBox.width / 2.f - dist);
+		penetration = box.width / 2.f + collBox.width / 2.f - dist;
 	}
 	else {
 		normal.y = (float)math::sgn(diff.y);
 		dist = std::abs(diff.y);
-		penetration = std::abs(box.height / 2.f + collBox.height / 2.f - dist);
+		penetration = box.height / 2.f + collBox.height / 2.f - dist;
 	}
 
 	move(0.5f * penetration * normal);

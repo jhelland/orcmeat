@@ -27,10 +27,9 @@ void GameState::initialize() {
 
 	// Create collidable rectangles
 	/// WARNING: make sure pool allocator has appropriate chunk sizes before uncommenting this
-	/*
 	core::Entity* wall = entityManager.add_entity<RectangleEntity>(100.f, 100.f, 10.f, 400.f, sf::Color::Black);  // left wall
 	entitiesDist0.push_back(wall->get_id());	
-	*/
+	
 
 	core::Entity* test = entityManager.add_entity<CircleEntity>(200.f, 200.f, 40.f, sf::Color::Blue);
 	entitiesDist0.push_back(test->get_id());
@@ -79,7 +78,8 @@ void GameState::update(StateEngine* eng) {
 		ent->plan(this);
 	}
 
-	auto collisionList = get_collisions();
+	float deltaTime = eng->get_delta_time();
+	auto collisionList = get_collisions(deltaTime);
 
 	// Resolve detected collisions
 	for (auto& collision : collisionList) {
@@ -88,7 +88,6 @@ void GameState::update(StateEngine* eng) {
 	}
 
 	// Actions for entities
-	float deltaTime = eng->get_delta_time();
 	for (auto id : entitiesDist0) {
 		auto ent = entityManager.get_entity_by_id(id);
 		ent->act(this, deltaTime);
@@ -145,7 +144,7 @@ void GameState::handle_events(StateEngine *eng) {
 			case sf::Mouse::Left: {
 				auto mp = eng->window.mapPixelToCoords(sf::Mouse::getPosition(eng->window));
 				// Create new entity
-				for (int i = 0; i < 100; ++i) {
+				for (int i = 0; i < 10; ++i) {
 					auto r = std::max(4, (int)(10*(utils::rand() + 1) / 2));
 					sf::Vector2i size(r, r);
 					auto v = eng->window.mapPixelToCoords(sf::Mouse::getPosition(eng->window) - size);
@@ -186,7 +185,7 @@ void GameState::handle_events(StateEngine *eng) {
 }
 
 
-std::vector<std::pair<id::IdType, id::IdType>> GameState::get_collisions() {
+std::vector<std::pair<id::IdType, id::IdType>> GameState::get_collisions(float deltaTime) {
 	// Build a quadtree of collidable entities.
 	// Does not include world boundaries.
 	qt_create(&collisionTree, 800, 600, 8, 8);
@@ -206,22 +205,20 @@ std::vector<std::pair<id::IdType, id::IdType>> GameState::get_collisions() {
 	std::vector<sf::Color> colors{ sf::Color::Red, sf::Color::Blue, sf::Color::Black, sf::Color::Magenta, sf::Color::Green, sf::Color::Cyan, sf::Color::Yellow };
 	bool playerCollideFlag = false;
 	for (auto& it : entityManager.get_entity_register()) {
-		//if (it.first == playerId) continue;  // NOCLIP BABYYYYYYYYY
-
-		auto position = it.second->get_position();
+		auto futurePosition = it.second->get_position() + deltaTime * it.second->velocity;
 		auto box = it.second->get_bounding_box();
-		box.left = position.x;
-		box.top = position.y;
+		box.left = futurePosition.x;
+		box.top = futurePosition.y;
 
 		qt_query(&collisionTree, &intList, box.left, box.top, box.left + box.width, box.top + box.height, -1);
 		for (int n = 0; n < il_size(&intList); ++n) {
 			auto collId = collisionIdMap[il_get(&intList, n, 0)];
 
 			auto other = entityManager.get_entity_by_id(collId);
-			auto otherPosition = other->get_position();
+			auto otherFuturePosition = other->get_position() + deltaTime * other->velocity;
 			auto otherBox = other->get_bounding_box();
-			otherBox.left = otherPosition.x;
-			otherBox.top = otherPosition.y;
+			otherBox.left = otherFuturePosition.x;
+			otherBox.top = otherFuturePosition.y;
 
 			if (collId != it.first && box.intersects(otherBox)) {
 				collisionList.push_back(std::make_pair(it.first, collId));  // Build collision list to resolve

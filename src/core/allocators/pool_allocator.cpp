@@ -37,7 +37,7 @@ namespace core {
 
 
 		void* PoolAllocator::alloc(const size_t allocSize, const size_t alignment) {
-			assert(allocSize == chunkSize && "Allocation size must equal chunk size");
+			assert(allocSize <= chunkSize && "Allocation size must be <= chunk size");
 
 			Node* freePosition = freeList.pop();
 

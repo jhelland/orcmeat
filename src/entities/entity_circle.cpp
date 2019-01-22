@@ -72,7 +72,8 @@ void CircleEntity::collide(GameState *eng, id::IdType collideeId) {
 	}
 
 	move(0.5f * penetration * normal);
-	velocity -= math::dot_product(velocity, normal) * normal;
+	velocity *= -1.f;
+	//velocity -= math::dot_product(velocity, normal) * normal;
 }
 
 

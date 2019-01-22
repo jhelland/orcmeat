@@ -47,7 +47,7 @@ private:
 	Camera camera;
 
 private:
-	std::vector<std::pair<id::IdType, id::IdType>> get_collisions();
+	std::vector<std::pair<id::IdType, id::IdType>> get_collisions(float deltaTime);
 
 public:
 	std::vector<id::IdType> entitiesDist0;		// An example of a list of entities w/in update range
