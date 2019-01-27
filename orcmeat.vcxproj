@@ -132,7 +132,9 @@
     <ClCompile Include="src\core\allocators\linear_allocator.cpp" />
     <ClCompile Include="src\core\allocators\pool_allocator.cpp" />
     <ClCompile Include="src\core\allocators\stack_allocator.cpp" />
+    <ClCompile Include="src\core\animation.cpp" />
     <ClCompile Include="src\core\entity_manager.cpp" />
+    <ClInclude Include="src\core\animation.h" />
     <ClInclude Include="src\core\entity_manager.h" />
     <ClCompile Include="src\core\memory_manager.cpp" />
     <ClCompile Include="src\entities\entity_circle.cpp" />
@@ -162,7 +164,6 @@
     <ClInclude Include="src\entities\entity_rectangle.h" />
     <ClInclude Include="src\globals.h" />
     <ClInclude Include="src\utils\data_structures\int_list.h" />
-    <ClInclude Include="src\utils\data_structures\OLD_quadtree.h" />
     <ClInclude Include="src\utils\data_structures\quadtree.h" />
     <ClInclude Include="src\utils\data_structures\red_black_tree.h" />
     <ClInclude Include="src\utils\data_structures\singly_linked_list.h" />

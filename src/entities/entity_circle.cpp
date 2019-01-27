@@ -60,7 +60,9 @@ void CircleEntity::collide(GameState *eng, id::IdType collideeId) {
 	sf::Vector2f normal(0.f, 0.f);
 	float dist = 0.f;
 	float penetration = 0.f;
-	if (std::abs(diff.x) > std::abs(diff.y)) {
+	float maxWidth = std::max(box.width, collBox.width) / 2.f;
+	float maxHeight = std::max(box.height, collBox.height) / 2.f;
+	if (std::abs(diff.x) - maxWidth > std::abs(diff.y) - maxHeight) {
 		normal.x = (float)math::sgn(diff.x);
 		dist = std::abs(diff.x);
 		penetration = std::abs(box.width / 2.f + collBox.width / 2.f - dist);

@@ -251,6 +251,8 @@ std::vector<std::pair<id::IdType, id::IdType>> GameState::get_collisions(float d
 			}
 		}
 
+		// TODO: make this integrated with collision response system
+		// BUG: player slides along world edge faster than they should
 		if (!worldRect.contains(box.left, box.top) || !worldRect.contains(box.left + box.width, box.top + box.height)) {
 			if (it.first != playerId) {
 				it.second->velocity *= -1.f;
